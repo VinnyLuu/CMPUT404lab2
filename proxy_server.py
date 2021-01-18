@@ -1,13 +1,7 @@
 from multiprocessing import Process
 import socket
 
-HOST = ''                 # Symbolic name meaning all available interfaces
-PORT = 8001              # Arbitrary non-privileged port
-with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
-    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
-    s.bind((HOST, PORT))
-    s.listen(1)
-    conn, addr = s.accept()
+def handle_connection(conn, addr):
     with conn:
         print('Connected by', addr)
         while True:
@@ -22,3 +16,17 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             print('Received from google', repr(google_data))
 
             conn.sendall(google_data)
+
+
+HOST = ''                 # Symbolic name meaning all available interfaces
+PORT = 8001              # Arbitrary non-privileged port
+with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+    s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    s.bind((HOST, PORT))
+    s.listen(1)
+    while True:
+        conn, addr = s.accept()
+        p = Process(target=handle_connection, args=(conn, addr))
+        p.start()
+        p.join()
+        
