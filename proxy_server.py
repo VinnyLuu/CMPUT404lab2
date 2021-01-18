@@ -1,7 +1,10 @@
 from multiprocessing import Process
 import socket
+import os
 
 def handle_connection(conn, addr):
+    print('parent process:', os.getppid())
+    print('process id:', os.getpid())
     with conn:
         print('Connected by', addr)
         while True:
