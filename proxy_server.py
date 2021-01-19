@@ -30,6 +30,8 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
     while True:
         conn, addr = s.accept()
         p = Process(target=handle_connection, args=(conn, addr))
+        p.daemon = True
         p.start()
-        p.join()
+        
+    conn.close()
         

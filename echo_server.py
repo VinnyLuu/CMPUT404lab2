@@ -21,3 +21,5 @@ with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
         p = Process(target=handle_connection, args=(conn, addr))
         p.start()
         p.join()
+    
+    conn.close()
